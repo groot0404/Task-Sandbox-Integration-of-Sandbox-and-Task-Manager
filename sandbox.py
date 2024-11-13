@@ -24,6 +24,7 @@ class MalwareAnalyzer:
             raise RuntimeError("Image not found. Please pull the image first.")
         volume = {"/mnt/analysis_file": {'bind': '/mnt/analysis_file', 'mode': 'ro'}}
         self.container = self.client.containers.run(image, detach=True, volumes=volume)
+        print(self.container)
 
     def analyze_file(self, file_path):
         if not self.container:
@@ -60,12 +61,12 @@ def get_file_path_from_location_file():
         return None
 
 # Use the correct interface name obtained from the list
-interface_name = "Wi-Fi"  # Replace with the actual interface name if different
+interface_name = "Ethernet"  # Replace with the actual interface name if different
 
 # Images to pull
 images_to_pull = [
     {"name": "remnux/saltstack-tester", "tag": "latest"},
-    {"name": "remnux/remnux-distro", "tag": "focal"}
+    {"name": "remnux/remnux-distro", "tag": "latest"}
 ]
 
 pulled_image = pull_docker_image(images_to_pull[1]["name"], images_to_pull[1]["tag"])
@@ -76,12 +77,16 @@ if pulled_image:
 
     file_path = get_file_path_from_location_file()
     if file_path:
-        analysis_result = malware_analyzer.analyze_file(file_path)
-        print("Analysis Result:")
-        print(analysis_result)
-        malware_analyzer.stop_container()
-
         network_analyzer = NetworkAnalyzer(interface=interface_name)
         network_analyzer.capture_packets(duration=10, output_file="malware_traffic.pcap")
+
+        analysis_result = malware_analyzer.analyze_file(file_path)
+        print("Analysis Result:")
+        if analysis_result=="":
+            print("Not a Malware File")
+        else:
+            print(analysis_result)
+        malware_analyzer.stop_container()
+
     else:
         print("No valid file path found in location.txt.")

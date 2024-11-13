@@ -4,9 +4,9 @@ import psutil
 import os
 import subprocess
 import requests
-import sys
+#import sys
 import hashlib
-import argparse
+#import argparse
 import logging
 import json
 import time
@@ -19,15 +19,22 @@ def get_running_processes():
     return psutil.process_iter(attrs=["pid", "name", "cpu_percent", "memory_info"])
 
 def open_file_location(process_pid):
-    """Open the file location of a process."""
+    """Open the file location of a process and save the path to location.txt."""
     global selected_process_path  # Use the global variable
     try:
         process = psutil.Process(process_pid)
         file_path = process.exe()
         selected_process_path = os.path.dirname(file_path)  # Store the directory of the selected process
         subprocess.Popen(f'explorer /select,"{file_path}"')  # Open the directory and select the file
+        
+        # Save the selected process path to location.txt
+        with open("location.txt", "w") as file:
+            file.write(f"{file_path}")
+        print(f"File location saved to location.txt: {file_path}")
+        
     except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
         print(f"Error: Unable to open file location for process with PID {process_pid}")
+
 
 def show_processes():
     """Display the list of running processes in the GUI."""

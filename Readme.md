@@ -18,14 +18,17 @@ ubuntu              12.04               8dbd9e392a96        4 months ago        
 
 step 4: Connect to the docker machine using the command line
 
-There are 2 ways
+There are 3 ways
+1.
 $ docker exec  -it 30dd348d8907b943d43e168bbab8a8d6ca70b109a289d5975d6d9201eddb6be9 /bin/bash
 
 after -it, put the container id
 
+2.
 $ docker run -i -t ubuntu:12.04 /bin/bash
 
-Without a name, just using the ID:
+3.
+Without a name, just using the Image ID:
 
 $  docker run -i -t 8dbd9e392a96 /bin/bash
 
@@ -33,15 +36,18 @@ check if the tools we require are installed on the docker machine,
 if they are not installed, try to update the machine and save its new
 state so that the container will save the new session.
 
-step 5: Now run the Taskmanager.py
+step 5:login to docker in vs code editor
+$   docker login
+
+step 6: Now run the Taskmanager.py
 
 This will open a window with all the resource allocation data
 
-step 6: now, select any suspicious files, and open location
+step 7: now, select any suspicious files, and open location
 
 This action will create a file named filepath.txt
 
-step7: now run the sandbox.py
+step 8: now run the sandbox.py
 
 This will create a new container and run the file inside
 the docker container while caputring the data inside the 
